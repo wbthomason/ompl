@@ -58,7 +58,7 @@ script:
     else
       mkdir -p build &&
       cd build &&
-      cmake -G Ninja -DOMPL_REGISTRATION=OFF .. &&
+      CXXFLAGS="$CXXFLAGS -march=native" cmake -G Ninja -DOMPL_REGISTRATION=OFF .. &&
       cmake --build . &&
       ctest;
     fi
