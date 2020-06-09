@@ -1,5 +1,7 @@
 language: cpp
 
+env:
+  - CXXFLAGS='-march=native'
 matrix:
   include:
   - os: linux
@@ -7,58 +9,23 @@ matrix:
     compiler: gcc
     addons:
       apt:
-        packages:
-        - libboost-filesystem-dev
-        - libboost-program-options-dev
-        - libboost-serialization-dev
-        - libboost-system-dev
-        - libboost-test-dev
-        - libeigen3-dev
-        - libflann-dev
-        - libode-dev
-        - ninja-build
-  - os: linux
-    dist: xenial
-    compiler: gcc
-    addons:
-      apt:
-        packages:
-        - libboost-filesystem-dev
-        - libboost-program-options-dev
-        - libboost-serialization-dev
-        - libboost-system-dev
-        - libboost-test-dev
-        - libeigen3-dev
-        - libflann-dev
-        - libode-dev
-        - ninja-build
-  - os: osx
-    osx_image: xcode10.3
-    compiler: clang
-    addons:
-      homebrew:
-        packages:
-        - eigen
-        - flann
-        - ninja
         update: true
-  - os: linux
-    services:
-      - docker
-    env: DOCKERFILE="debian-buster"
-
-before_install:
-  - if [ -n "$DOCKERFILE" ]; then
-      docker build -t "$DOCKERFILE" -f "scripts/docker/$DOCKERFILE.Dockerfile" .;
-    fi
-
+        sources:
+        - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse'
+        - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse'
+        packages:
+        - libboost-filesystem-dev
+        - libboost-program-options-dev
+        - libboost-serialization-dev
+        - libboost-system-dev
+        - libboost-test-dev
+        - libeigen3-dev
+        - libflann-dev
+        - libode-dev
+        - ninja-build
 script:
-  - if [ -n "$DOCKERFILE" ]; then
-      docker run "$DOCKERFILE"  /bin/sh -c "cmake -DOMPL_REGISTRATION=OFF .. && make -j `nproc` && ctest";
-    else
-      mkdir -p build &&
-      cd build &&
-      CXXFLAGS="$CXXFLAGS -march=native" cmake -G Ninja -DOMPL_REGISTRATION=OFF .. &&
-      cmake --build . &&
-      ctest;
-    fi
+  mkdir -p build &&
+  cd build &&
+  cmake -G Ninja -DOMPL_REGISTRATION=OFF .. &&
+  cmake --build . &&
+  ctest;
