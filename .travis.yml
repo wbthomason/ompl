@@ -24,10 +24,10 @@ matrix:
         - libflann-dev
         - libode-dev
         - ninja-build
-- os: linux
-    services:
-      - docker
-    env: DOCKERFILE="archlinux"
+  - os: linux
+      services:
+        - docker
+      env: DOCKERFILE="archlinux"
 
 before_install:
   - if [ -n "$DOCKERFILE" ]; then
