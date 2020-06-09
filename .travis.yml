@@ -25,7 +25,7 @@ matrix:
   - os: linux
     services:
       - docker
-    env: DOCKERFILE="archlinux" CXXFLAGS="-march=native"
+    env: DOCKERFILE="archlinux" CXXFLAGS="-march=native -w"
 
 before_install:
   - if [ -n "$DOCKERFILE" ]; then
@@ -35,11 +35,15 @@ before_install:
 script:
   - echo "$CXXFLAGS"
   - if [ -n "$DOCKERFILE" ]; then
-      docker run -e CXXFLAGS="$CXXFLAGS" "$DOCKERFILE" /bin/sh -c "cmake -G Ninja -DOMPL_REGISTRATION=OFF .. && cmake --build . && ctest";
+      docker run -e CXXFLAGS="$CXXFLAGS" "$DOCKERFILE" /bin/sh -c "cmake -G Ninja -DOMPL_REGISTRATION=OFF .. && cmake --build .";
     else
       mkdir -p build &&
       cd build &&
       cmake -G Ninja -DOMPL_REGISTRATION=OFF .. &&
       cmake --build . &&
-      ctest;
+    fi
+  - if [ -n "$DOCKERFILE" ]; then
+      docker run -e "$DOCKERFILE" /bin/sh -c "ctest"
+    else
+      cd build && ctest
     fi
