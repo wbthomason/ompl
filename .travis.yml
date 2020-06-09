@@ -43,7 +43,7 @@ script:
       cmake --build .;
     fi
   - if [ -n "$DOCKERFILE" ]; then
-      docker run -e "$DOCKERFILE" /bin/sh -c "ctest";
+      docker run "$DOCKERFILE" /bin/sh -c "ctest";
     else
-      cd build && ctest;
+      ctest;
     fi
