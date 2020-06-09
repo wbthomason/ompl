@@ -40,10 +40,10 @@ script:
       mkdir -p build &&
       cd build &&
       cmake -G Ninja -DOMPL_REGISTRATION=OFF .. &&
-      cmake --build . &&
+      cmake --build .;
     fi
   - if [ -n "$DOCKERFILE" ]; then
-      docker run -e "$DOCKERFILE" /bin/sh -c "ctest"
+      docker run -e "$DOCKERFILE" /bin/sh -c "ctest";
     else
-      cd build && ctest
+      cd build && ctest;
     fi
