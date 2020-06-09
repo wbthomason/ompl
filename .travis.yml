@@ -1,14 +1,11 @@
 language: cpp
 
-env: 
-  global:
-    - CXXFLAGS="-march=native"
-
 matrix:
   include:
   - os: linux
     dist: bionic
     compiler: gcc
+    env: CXXFLAGS="-march=native"
     addons:
       apt:
         update: true
@@ -28,7 +25,7 @@ matrix:
   - os: linux
     services:
       - docker
-    env: DOCKERFILE="archlinux"
+    env: DOCKERFILE="archlinux" CXXFLAGS="-march=native"
 
 before_install:
   - if [ -n "$DOCKERFILE" ]; then
