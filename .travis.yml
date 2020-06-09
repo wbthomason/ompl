@@ -1,7 +1,8 @@
 language: cpp
 
 env:
-  - CXXFLAGS='-march=native'
+  - CXXFLAGS="-march=native"
+
 matrix:
   include:
   - os: linux
@@ -23,9 +24,24 @@ matrix:
         - libflann-dev
         - libode-dev
         - ninja-build
+- os: linux
+    services:
+      - docker
+    env: DOCKERFILE="archlinux"
+
+before_install:
+  - if [ -n "$DOCKERFILE" ]; then
+      docker build -t "$DOCKERFILE" -f "scripts/docker/$DOCKERFILE.Dockerfile" .;
+    fi
+
 script:
-  mkdir -p build &&
-  cd build &&
-  cmake -G Ninja -DOMPL_REGISTRATION=OFF .. &&
-  cmake --build . &&
-  ctest;
+  - echo "$CXXFLAGS"
+  - if [ -n "$DOCKERFILE" ]; then
+      docker run -e CXXFLAGS="$CXXFLAGS" "$DOCKERFILE" /bin/sh -c "cmake -G Ninja -DOMPL_REGISTRATION=OFF .. && cmake --build . && ctest";
+    else
+      mkdir -p build &&
+      cd build &&
+      cmake -G Ninja -DOMPL_REGISTRATION=OFF .. &&
+      cmake --build . &&
+      ctest;
+    fi
