@@ -1,6 +1,9 @@
 language: cpp
 
-env: CXXFLAGS="-march=native"
+env: 
+  global:
+    - CXXFLAGS="-march=native"
+
 matrix:
   include:
   - os: linux
