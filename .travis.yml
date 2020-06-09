@@ -35,15 +35,11 @@ before_install:
 script:
   - echo "$CXXFLAGS"
   - if [ -n "$DOCKERFILE" ]; then
-      docker run -e CXXFLAGS="$CXXFLAGS" "$DOCKERFILE" /bin/sh -c "cmake -G Ninja -DOMPL_REGISTRATION=OFF .. && cmake --build .";
+      docker run -e CXXFLAGS="$CXXFLAGS" "$DOCKERFILE" /bin/sh -c "cmake -G Ninja -DOMPL_REGISTRATION=OFF .. && cmake --build . && ctest";
     else
       mkdir -p build &&
       cd build &&
       cmake -G Ninja -DOMPL_REGISTRATION=OFF .. &&
-      cmake --build .;
-    fi
-  - if [ -n "$DOCKERFILE" ]; then
-      docker run "$DOCKERFILE" /bin/sh -c "ctest";
-    else
+      cmake --build . &&
       ctest;
     fi
